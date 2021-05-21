@@ -1,4 +1,4 @@
-/*£¨Ò»£©ÕıÑİÄ£Äâ³ÌĞò*/
+/*ï¼ˆä¸€ï¼‰æ­£æ¼”æ¨¡æ‹Ÿç¨‹åº*/
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -8,14 +8,14 @@
 #define e 2.71828
 int main(int argc, char *argv[])
 {
-	/************ÉùÃ÷±äÁ¿****************/
+	/************å£°æ˜å˜é‡****************/
 	FILE *fp;
 	int  i, j, k, m, n, p, Xn=300,Zn=300,Tn=400;
 	double temp, tem, mid,dt=0.001,dh=5.0;
 	double *w, **v,**u0, **u1, **u2, **u3, **u4; 
-    tem=280;//²¨Ç°¿ìÕÕÊ±¼ä
-  	p=10;//¼ì²¨ÃæÎ»ÖÃ
-	/************Êı×é¿ª±Ù£¨ÂÔ£©****************/
+    tem=280;//æ³¢å‰å¿«ç…§æ—¶é—´
+  	p=10;//æ£€æ³¢é¢ä½ç½®
+	/************æ•°ç»„å¼€è¾Ÿï¼ˆç•¥ï¼‰****************/
 	w=(double*)calloc(Tn,sizeof(double));
 	v = (double**)calloc(Zn,sizeof(double*));
 	for (i = 0; i < Zn; i++)
@@ -51,10 +51,10 @@ int main(int argc, char *argv[])
 	{
 		u4[i] = (double*)calloc(Tn,sizeof(double));
 	}
-	/************×Ó²¨ºÍËÙ¶ÈÊı×é¸³Öµ****************/
+	/************å­æ³¢å’Œé€Ÿåº¦æ•°ç»„èµ‹å€¼****************/
 	for(k=0;k<Tn;k++)
-	w[k] = pow(e, (-pow(2 * PI*FM / R, 2)*pow((k - 40)*dt, 2)))*cos(2 * PI*FM*(k - 40)*dt);//À×¿Ë×Ó²¨²ÉÑù 
-	/*¾ùÔÈ½éÖÊ*/ 
+	w[k] = pow(e, (-pow(2 * PI*FM / R, 2)*pow((k - 40)*dt, 2)))*cos(2 * PI*FM*(k - 40)*dt);//é›·å…‹å­æ³¢é‡‡æ · 
+	/*å‡åŒ€ä»‹è´¨*/ 
 	for (i = 0; i < Xn; i++)
 	{
 		for (j = 0; j < Zn; j++)
@@ -62,14 +62,14 @@ int main(int argc, char *argv[])
 			v[i][j] = 2500.0;
 		}
 	}
-	/************²¨³¡¼ÆËã****************/
+	/************æ³¢åœºè®¡ç®—****************/
 	for(k=1;k<Tn-1;k++)	
 	{
 	  for (i = 2; i < Xn - 2; i++)
 		{
 			for (j = 2; j < Zn - 2; j++)
 			{
-				if (i == 150 && j ==150)//ÕğÔ´µã
+				if (i == 150 && j ==150)//éœ‡æºç‚¹
 					temp = 1;
 				else temp = 0;
 				u2[i][j] = 2 * u1[i][j] - u0[i][j]+ pow(v[i][j],2 )* pow(dt,2 ) / pow(dh,2 )*\
@@ -96,33 +96,29 @@ int main(int argc, char *argv[])
 					u3[i][j] = u2[i][j];
 		}
 	}
-	//Èı¸ö¶şÎ¬Êı×é±íÊ¾³öÒ»¸öÈıÎ¬Êı×éµÄ²¨³¡ÔËËã
+	//ä¸‰ä¸ªäºŒç»´æ•°ç»„è¡¨ç¤ºå‡ºä¸€ä¸ªä¸‰ç»´æ•°ç»„çš„æ³¢åœºè¿ç®—
 
-	/************Ğ´ÎÄ¼ş****************/
-	if((fp=fopen("F:\wavefront.dat","w"))!=NULL)
+	/************å†™æ–‡ä»¶****************/
+	FILE* fp;
+	errno_t error;
+	error = fopen_s(&fp, "wavefront.dat", "w+");
+	if (error != 0)
 	{
-		fprintf(fp, "%d\n", Xn);
-		fprintf(fp, "%d\n", Zn);     
-		for(i=0;i<Xn;i++)
-			for(j=0;j<Zn;j++)
-				{
-					fprintf(fp,"%f\n",u3[i][j]);    
-				}
-		fclose(fp);
+		printf("æ‰“å¼€å¤±è´¥");
 	}
+	else 
+	{
+		for (int i = 0; i < Xn; i++)
+		{
+			for (int j = 0; j < Zn; j++)
+			{
+				fprintf(fp, "%lf\n ", u3[i][j]);
+			}
+		}
+	}
+	fclose(fp);
 	
-	if((fp=fopen("F:\Seis_Record.dat","w"))!=NULL)
-	{
-		fprintf(fp, "%d\n", Xn);
-		fprintf(fp, "%d\n", Zn);  
-		for(i=0;i<Xn;i++)
-			for(k=0;k<Tn;k++)
-				{
-					fprintf(fp,"%f\n",u4[i][k]);    
-				}
-		fclose(fp);
-	}
-	/*ÄÚ´æÊÍ·Å*/ 
+	/*å†…å­˜é‡Šæ”¾*/ 
 	free(w);
 	for(i=0;i<Xn;i++)
 		free(v[i]);
